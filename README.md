@@ -41,3 +41,4 @@ Then restart firewall by running `/etc/init.d/firewall reload`
 ipset flush torguard
 ipset restore -! < torguard_ipset.txt
 ```
+Unfortunately I was not able to run this script on my OpenWrt router (I was unable to install pandas module) so I run it on my RPi box. 
