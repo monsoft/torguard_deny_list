@@ -21,7 +21,7 @@ Add this configuration to OpenWrt /etc/config/firewall:
 ```
 config ipset   
         option name 'torguard'
-        option match 'src_net'
+        option match 'src_ip'
         option storage 'hash' 
         option enabled '1'     
                                
