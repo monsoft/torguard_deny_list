@@ -7,6 +7,7 @@ import requests
 import sys
 
 ipset_file = 'torguard_ipset.txt'
+ipset_file_cache = 'torguard_ipset.cache'
 ipset_set = 'torguard'
 url = 'https://torguard.net/network/index.php'
 http_headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.60 Safari/537.36'}
@@ -26,10 +27,10 @@ except requests.exceptions.HTTPError as e:
     sys.exit("Error: " + str(e))
     
 hn_tables = pd.read_html(page.text, header=None, index_col=None)
-print('Generating %s ipset list' % ipset_file )
+print('Generating %s ipset list' % ipset_file_cache )
 
 for i in range(len(hn_tables)):
-    with open(ipset_file, 'a') as f:
+    with open(ipset_file_cache, 'a') as f:
         hn_table = hn_tables[i]['Hostnames'].to_numpy()
         for host_name in hn_table:
             #print(host_name, socket.gethostbyname_ex(host_name)[2])
@@ -37,5 +38,7 @@ for i in range(len(hn_tables)):
                 print('add %s %s' % (ipset_set,ip), file=f)
                 print('■', end='', flush=True)
 
+os.system('sort -u %s >> %s' % (ipset_file_cache, ipset_file))
+os.remove(ipset_file_cache)
 print('')
 print('IPs have been written to %s file. Please import it to your ipset list.' % ipset_file)
